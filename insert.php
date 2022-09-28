@@ -8,17 +8,19 @@ if (isset($_POST['submit'])) {
         $password = $_POST['password'];
         $gender = $_POST['gender'];
         $email = $_POST['email'];
+        $phoneCode = $_POST['phoneCode'];
+        $phone = $_POST['phone'];
         $host = "localhost";
         $dbUsername = "root";
         $dbPassword = "";
-        $dbName = "login_sql";
+        $dbname = "login_sql";
         $conn = new mysqli($host, $dbUsername, $dbPassword, $dbName);
         if ($conn->connect_error) {
             die('Could not connect to the database.');
         }
         else {
             $Select = "SELECT email FROM register WHERE email = ? LIMIT 1";
-            $Insert = "INSERT INTO register(username, password, email) values(?, ?, ?)";
+            $Insert = "INSERT INTO register(username, password, gender, email, phoneCode, phone) values(?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($Select);
             $stmt->bind_param("s", $email);
             $stmt->execute();
@@ -31,25 +33,25 @@ if (isset($_POST['submit'])) {
                 $stmt = $conn->prepare($Insert);
                 $stmt->bind_param("ssssii",$username, $password, $gender, $email, $phoneCode, $phone);
                 if ($stmt->execute()) {
-                    echo "Sikeres művelet";
+                    echo "New record inserted sucessfully.";
                 }
                 else {
                     echo $stmt->error;
                 }
             }
             else {
-                echo "Valaki regisztrált már ezzel az email címmel.";
+                echo "Someone already registers using this email.";
             }
             $stmt->close();
             $conn->close();
         }
     }
     else {
-        echo "Az összes kötelező!";
+        echo "All field are required.";
         die();
     }
 }
 else {
-    echo "A gomb nincs konfigurálva";
+    echo "Submit button is not set";
 }
 ?>
